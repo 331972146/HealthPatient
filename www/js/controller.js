@@ -793,14 +793,30 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
 }])
 
 //任务列表
-.controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage','$ionicLoading',
-  function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage,$ionicLoading) {
+.controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage','$ionicLoading','PlanInfo',
+  function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage,$ionicLoading,PlanInfo) {
   //extraInfo.PlanNo().PlanNo'PLAN20151029'
-  $scope.getexecutingplan();
-  var data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
-  ionic.DomUtil.ready(function(){
-    get();
-  });
+  //$scope.getexecutingplan();
+   var data={"ParentCode":"T","PlanNo":"","Date":"NOW","PatientId":Storage.get("UID")};
+   var get = {
+          PatientId:Storage.get("UID"),
+          PlanNo:'NULL',
+          Module:'M1',
+          Status:'3'
+        }
+        PlanInfo.GetExecutingPlan(get).then(function(s){
+          // console.log(s[0]);
+          extraInfo.PlanNo(s[0]);
+          data.PlanNo=s[0].PlanNo;
+          get();
+        },function(e){
+          console.log(e);
+        })
+
+ 
+  // ionic.DomUtil.ready(function(){
+  //   get();
+  // });
   $scope.doRefresh = function() {
     $scope.getexecutingplan();
     data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
