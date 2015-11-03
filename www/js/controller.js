@@ -615,7 +615,7 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     TaskInfo.GetTasklist(data).then(function(s){
       console.log(s);
       $scope.$broadcast('scroll.refreshComplete');
-      $scope.taskdetaillist = TaskInfo.insertstate(s);
+      $scope.taskdetaillist = extraInfo.TransformInstruction(TaskInfo.insertstate(s));
       var i=0;
       if(s.length)getdetail(i);
       extraInfo.refreshstatus('刷新成功');
