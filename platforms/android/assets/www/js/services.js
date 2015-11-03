@@ -2,7 +2,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
 
 // 客户端配置
 .constant('CONFIG', {
-  baseUrl: 'http://10.12.43.72:9000/Api/v1/',
+  baseUrl: 'http://121.43.107.106:9000/Api/v1/',
   wsServerIP : "ws://" + "10.12.43.61" + ":4141",
   role: "Patient",
   //revUserId: "",
@@ -123,7 +123,8 @@ angular.module('zjubme.services', ['ionic','ngResource'])
               Plan: {method:'GET', params:{route: 'Plan'},timeout: 10000, isArray:true},
               PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart', $top:"7", $orderby:"Date"},timeout: 10000, isArray:true},                
               Target: {method:'GET', params:{route: 'Target'},timeout: 10000},
-              PlanInfoChartDtl: {method:'GET', params:{route: 'Target'},timeout: 10000, isArray:true}        
+              PlanInfoChartDtl: {method:'GET', params:{route: 'PlanInfoChartDtl'},timeout: 10000, isArray:true},
+              GetExecutingPlan: {method:'GET', isArray:true ,params:{route: 'Plan'},timeout: 10000}        
         });
     };
 
@@ -412,37 +413,44 @@ angular.module('zjubme.services', ['ionic','ngResource'])
     PatientId:function(data){
       if(data==null)
       {
-        return window.localStorage.getItem("PatientId");
+        return angular.fromJson(window.localStorage['PatientId']);
       }else {
-        window.localStorage.setItem("PatientId",data);
+        window.localStorage['PatientId'] = angular.toJson(data);
+      }},
+    PlanNo:function(data){
+      if(data==null)
+      {
+        return angular.fromJson(window.localStorage['PlanNo']);
+      }else {
+        window.localStorage['PlanNo'] = angular.toJson(data);
       }},
     TerminalIP:function(data){
       if(data==null)
       {
-        return window.localStorage.getItem("TerminalIP");
+        return angular.fromJson(window.localStorage['TerminalIP']);
       }else {
-        window.localStorage.setItem("TerminalIP",data);
+        window.localStorage['TerminalIP'] = angular.toJson(data);
       }},
     TerminalName:function(data){
       if(data==null)
       {
-        return window.localStorage.getItem("TerminalName");
+        return angular.fromJson(window.localStorage['TerminalName']);
       }else {
-        window.localStorage.setItem("TerminalName",data);
+        window.localStorage['TerminalName'] = angular.toJson(data);
       }},
     DeviceType:function(data){
       if(data==null)
       {
-        return window.localStorage.getItem("DeviceType");
+        return angular.fromJson(window.localStorage['DeviceType']);
       }else {
-        window.localStorage.setItem("DeviceType",data);
+        window.localStorage['DeviceType'] = angular.toJson(data);
       }},
     revUserId:function(data){
       if(data==null)
       {
-        return window.localStorage.getItem("ID");
+        return angular.fromJson(window.localStorage['ID']);
       }else {
-        window.localStorage.setItem("ID",data);
+        window.localStorage['ID'] = angular.toJson(data);
       }},
     DateTimeNow:function(){
       var date = new Date();
@@ -467,9 +475,10 @@ angular.module('zjubme.services', ['ionic','ngResource'])
     },
     dictionary:function(d){
       var dictionary={
-        "TD0000":"openModal",
+        "TD0000":"openHeModal",
         "TF0001":"#/tab/task/bpm",
         "TF0002":"#/tab/task/bpm",
+        "TF0003":"#/tab/task/bloodglucose",
         "TA0001":"#/tab/task/measureweight"
       }
       var r='';
@@ -480,6 +489,43 @@ angular.module('zjubme.services', ['ionic','ngResource'])
     },
     TransformUrl:function(url){
       return ("http://121.43.107.106:8090" + url);//http://121.43.107.106:8090/HealthEducation/M1_2015-05-18%2022_56_35.html
+    },
+    TransformBloodglucoseCode:function(n){
+      var dictionary={
+        "凌晨":"BloodSugar_2",
+        "睡前":"BloodSugar_3",
+        "早餐前":"BloodSugar_4",
+        "早餐后":"BloodSugar_5",
+        "午餐前":"BloodSugar_6",
+        "午餐后":"BloodSugar_7",
+        "晚餐前":"BloodSugar_8",
+        "晚餐后":"BloodSugar_9"
+      }
+      var r = '';
+      angular.forEach(dictionary,function(value,key){
+        if(key==n)r=value;
+      })
+      return r;
+    },
+    TransformInstruction:function(arr)
+    {
+      var l=arr.length;
+      for (var i=0;i<l;i++)
+      {
+        if(arr[i].ParentCode=='TB0000')
+        {
+          arr[i].Instruction!=''?arr[i].Instruction="建议摄入量："+arr[i].Instruction+'克':arr[i].Instruction;
+        }
+      }
+      return arr;
+    },
+    refreshstatus:function(status){
+       if(status==null)
+      {
+        return angular.fromJson(window.localStorage['refreshstatus']);
+      }else {
+        window.localStorage['refreshstatus'] = angular.toJson(status);
+      }
     }
   }
 })
@@ -628,6 +674,15 @@ angular.module('zjubme.services', ['ionic','ngResource'])
       });
     return deferred.promise;
   };
+  self.GetLatestPatientVitalSigns = function (data) {
+    var deferred = $q.defer();
+    Data.VitalInfo.GetLatestPatientVitalSigns(data, function (data, headers) {
+      deferred.resolve(data);
+      }, function (err) {
+      deferred.reject(err);
+      });
+    return deferred.promise;
+  };
   return self;
 }])
 
@@ -663,11 +718,11 @@ angular.module('zjubme.services', ['ionic','ngResource'])
       "Date": extraInfo.DateTimeNow().fulldate,
       "CategoryCode": arr.Type,
       "Code": arr.Code,
-      "Status": arr.Status,
+      "Status": "1",
       "Description": arr.Description,
       "SortNo":'1'
     };
-
+    console.log(arr.Status);
     var deferred = $q.defer();
       Data.TaskInfo.Done(data,function(s){
         deferred.resolve(s);
@@ -769,6 +824,16 @@ angular.module('zjubme.services', ['ionic','ngResource'])
     });
     return deferred.promise;
   };
+  self.GetExecutingPlan = function(data)
+  {
+    var deferred = $q.defer();
+    Data.PlanInfo.GetExecutingPlan(data,function(s){
+      deferred.resolve(s);
+    },function(e){
+      deferred.reject(e);
+    })
+    return deferred.promise;
+  }
   
     return self;
 }])

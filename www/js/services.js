@@ -135,7 +135,37 @@ angular.module('zjubme.services', ['ionic','ngResource'])
         Done:{method:'POST',params:{route: 'ComplianceDetail'}, timeout: 10000}
        });
     };
-
+    // var RiskInfo = function () {
+    // return $resource(CONFIG.baseUrl + ':path/:route', {path:'RiskInfo'},
+    //   {
+    //     GetRiskInfo: {method:'GET',params:{route: 'RiskResults'}, timeout: 10000}
+    //    });
+    // };
+    var RiskInfo = function(){
+        return $resource(CONFIG.baseUrl + ':path/:route',{
+          path:'RiskInfo',
+        },{
+          
+          // POST Api/v1/RiskInfo/RiskResult //这个不要了
+          postEvalutionResult:{method:'POST',params:{route: 'RiskResult'}, timeout: 20000},
+          // GET Api/v1/RiskInfo/RiskInput?UserId={UserId}
+          getEvalutionInput:{method:'GET',params:{route:'RiskInput',UserId:'@UserId'},timeout:10000},
+          // GET Api/v1/RiskInfo/RiskResults?UserId={UserId}
+          getEvalutionResults:{method:'GET',params:{route:'RiskResults',UserId:'@UserId'},isArray : true,timeout:10000},
+          // GET Api/v1/RiskInfo/RiskResult?UserId={UserId}&AssessmentType={AssessmentType}
+          getNewResult:{method:'GET',params:{route:'RiskResults',UserId:'@UserId',AssessmentType:'@AssessmentType'},timeout:10000},
+          // GET Api/v1/RiskInfo/GetDescription?SBP={SBP}
+          getSBPDescription:{method:'GET',params:{route:'GetDescription',SBP:'@SBP'},timeout:20000},
+          // GET Api/v1/RiskInfo/Parameters?Indicators={Indicators}
+          getIndicators:{method:'GET',params:{route:'Parameters',Indicators:'@Indicators'},timeout:10000},
+          // POST Api/v1/RiskInfo/TreatmentIndicators
+          postTreatmentIndicators:{method:'POST',params:{route:'TreatmentIndicators'},timeout:20000},
+          // POST Api/v1/RiskInfo/PsParameters
+          postPsParameters:{method:'POST',params:{route:'PsParameters'},timeout:10000}, 
+          // GET Api/v1/RiskInfo/GetMaxSortNo?UserId={UserId}
+          getMaxSortNo:{method:'GET',params:{route:'GetMaxSortNo',UserId:'@UserId'},timeout:10000} 
+      })
+    };
     serve.abort = function ($scope) {
     abort.resolve();
     $interval(function () {
@@ -146,7 +176,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
       serve.MessageInfo = MessageInfo(); 
       serve.TaskInfo = TaskInfo();
       serve.PlanInfo = PlanInfo();
-      
+      serve.RiskInfo = RiskInfo();
       }, 0, 1);
     };
     serve.Users = Users();
@@ -155,7 +185,7 @@ angular.module('zjubme.services', ['ionic','ngResource'])
     serve.MessageInfo = MessageInfo();
     serve.TaskInfo = TaskInfo();
     serve.PlanInfo = PlanInfo();
-    
+    serve.RiskInfo = RiskInfo();
     return serve;
 }])
 
@@ -343,7 +373,6 @@ angular.module('zjubme.services', ['ionic','ngResource'])
 
   return serve;
 }])
-
 .factory('loading',['$interval','$ionicLoading', function($interval,$ionicLoading){
   var serve={};
   var timerStart,timerFinish;
@@ -479,7 +508,8 @@ angular.module('zjubme.services', ['ionic','ngResource'])
         "TF0001":"#/tab/task/bpm",
         "TF0002":"#/tab/task/bpm",
         "TF0003":"#/tab/task/bloodglucose",
-        "TA0001":"#/tab/task/measureweight"
+        "TA0001":"#/tab/task/measureweight",
+        "TG0001":"#/tab/task/riskinfo"
       }
       var r='';
       angular.forEach(dictionary,function(value,key){
@@ -635,6 +665,18 @@ angular.module('zjubme.services', ['ionic','ngResource'])
   }
 })
 
+// .factory('RiskInfo',['Data',function(Data){
+//   var self = this;
+//   self.GetRiskInfo = function(UserId)
+//   {
+//     Data.RiskInfo.GetRiskInfo(UserId,function(s){
+//       deferred.resolve(s);
+//     },function(e){
+//       deferred.reject(e);
+//     });
+//     return deferred.promise;
+//   }
+// }])
 .factory('VitalInfo', ['$q', 'Data', 'extraInfo',function($q, Data, extraInfo){
   var self = this;
   self.InsertServerData = function()
@@ -967,6 +1009,105 @@ angular.module('zjubme.services', ['ionic','ngResource'])
   }
   }
 }])
+.factory('Patients',['Data','$q','$resource','CONFIG',function(Data,$q,$resource,CONFIG){ //LRZ
+  //get patients
+  //remove certain patients
+  //add  patients
+  //blablabla used by two controllers
 
+  return {
+    all: function() {
+      return patients_array;
+    },
+    remove: function(patient) {
+      patients_array.splice(patients_array.indexOf(chat), 1);
+    },
+    get: function(patientid) {
+      for (var i = 0; i < patients_array.length; i++) {
+        if (patients_array[i].id === parseInt(patientid)) {
+          return patients_array[i];
+        }
+      }
+      return null;
+    },
+    getEvalutionResults: function(userid){
+
+      var deferred = $q.defer();
+      Data.RiskInfo.getEvalutionResults({"UserId":userid}, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;        
+    },
+    getEvalutionInput: function(userid){
+      //获取填表所需输入 
+      var deferred = $q.defer();
+      Data.RiskInfo.getEvalutionInput({"UserId":userid}, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;        
+    },
+    getSBPDescription: function(sbp){
+      //获取填表所需输入 
+      var deferred = $q.defer();
+      Data.RiskInfo.getSBPDescription({"SBP":sbp}, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;        
+    },
+    getNewResult: function(userid){
+      var deferred = $q.defer();
+      Data.RiskInfo.getSBPDescription({"UserId":userid}, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },
+    postEvalutionResult:function(result){
+      console.log("uploading")
+      var deferred = $q.defer();
+        Data.RiskInfo.postEvalutionResult(result, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+        console.log(err);
+      });
+      return deferred.promise; 
+
+    },
+    postTreatmentIndicators: function(result){
+      var deferred = $q.defer();
+        Data.RiskInfo.postTreatmentIndicators(result, function (data, headers) {
+        console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },
+    getMaxSortNo:function(userid){
+      var deferred = $q.defer();
+        Data.RiskInfo.getMaxSortNo({"UserId":userid}, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;       
+    }
+
+  }
+}])
 
 ;

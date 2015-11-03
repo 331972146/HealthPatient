@@ -32,11 +32,11 @@
     <ion-side-menu side="left" width="225">
       <ion-header-bar class="bar-positive">
         <h1 class="title">慢病管理</h1>
-        <!-- <button class="button button-icon ion-plus" ng-click="newProject()"></button> -->
+        <!-- <button class="button button-icon ion-plus" ng-click="newProject()"></button> '{{ct.catalogID}}'=='logout'?'':'/catalog/{{ct.catalogID}}'-->
       </ion-header-bar>
       <ion-content scroll="false">
         <div class="list">
-        <a class="item item-avatar" href="#/catalog/{{ct.catalogID}}" ng-repeat="ct in catalog">
+        <a class="item item-avatar" href='#/catalog/{{ct.catalogID}}'  ng-repeat="ct in catalog" ng-click="signoutConfirm(ct.catalogID)">
             <img ng-src="{{ct.url}}">
             <h2>{{ct.catalog}}</h2>
         </a>
