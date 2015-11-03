@@ -7,9 +7,6 @@
   <ion-content>
     <ion-item style="border:none; text-align:center" >
          <img ng-src="{{imgurl}}" name="Photo" ng-click="onClickCamera($event)" style="border-radius:50%; height:30%; width:30%" />
-         <!-- <img src="{{url}}venkman.jpg" name="Photo" ng-click="onClickCamera($event)" style="border-radius:50%; height:30%; width:30%" /> -->
-         <!-- <img ng-show="imgURI != undefined"  ng-click="onClickCamera($event)" ng-src="{{imgURI}}" style="border-radius:50%; height:30%; width:30%" /> -->
-         <!-- <img ng-show="imgURI == undefined" ng-click="onClickCamera($event)" ng-src="img/avatar.jpg" style="border-radius:50%; height:30%; width:30%" /> -->
          <h2>{{BasicInfo.UserId}}</h2>
     </ion-item>
     <!-- 上传照片的弹出框 -->
@@ -63,11 +60,14 @@
             <span class="input-label">性别</span> 
           </div>  
           <div class="col col-67">
-            <input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="1" />  男
+            <!-- <ion-radio ng-model="BasicInfo.Gender" ng-value="1">男</ion-radio>
+            <ion-radio ng-model="BasicInfo.Gender" ng-value="2">女</ion-radio>
+            <ion-radio ng-model="BasicInfo.Gender" ng-value="3">其他</ion-radio> -->
+            <label><input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="1" />  男</label>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="2"/>  女
+            <label><input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="2"/>  女</label>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="3" />  其他
+            <label><input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="3" />  其他</label>
           </div>
         </div>
         <div class="row">

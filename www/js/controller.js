@@ -2357,6 +2357,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
 //----------------侧边栏----------------
 //个人信息
+//个人信息
 .controller('personalInfocontroller',['$scope','$ionicHistory','$state','$ionicPopup','$resource','Storage','Data','CONFIG','$ionicLoading','$ionicPopover','Camera',
    function($scope, $ionicHistory, $state, $ionicPopup, $resource, Storage, Data,CONFIG, $ionicLoading, $ionicPopover, Camera) {             
       // 返回键
@@ -2418,14 +2419,6 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           Data.Users.GetPatBasicInfo({route:urltemp1}, 
                         function (success, headers) {
                           $scope.BasicInfo = success;
-                          // // 时序问题，这里要等数据读完之后再设定
-                          // if (($scope.BasicInfo.Birthday==null)||($scope.BasicInfo.Birthday=="")) {
-                          //   console.log(111);
-                          //   $scope.BasicInfo.Birthday="请输入您的出生日期";
-                          //   console.log($scope.BasicInfo.Birthday);
-                          // };  
-                          // console.log($scope.BasicInfo);
-
                           Data.Users.GetPatientDetailInfo({route:urltemp2}, 
                             function (success, headers) {
                               $scope.BasicDtlInfo = success;
@@ -2620,6 +2613,10 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
                                                       // $state.go('sideMenu.personalInfo');
                                                       init_personalInfo();
                                                       // location.reload(); 这种刷新方法会使返回键失效
+                                                      $ionicLoading.show({
+                                                         template: '保存成功',
+                                                         duration:1000
+                                                        });
                                                     };
                                                   });
               }// if语句结束，即详细信息的修改结束
