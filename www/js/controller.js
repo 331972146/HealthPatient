@@ -670,9 +670,13 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
                 onTap: function(e) {
                     $state.go('signin');
                     Storage.rm('TOKEN');
-                     // $ionicHistory.clearCache();
-                     // $ionicHistory.clearHistory();
-
+                    var USERNAME=Storage.get("USERNAME");
+                    Storage.clear();
+                     Storage.set("USERNAME",USERNAME);
+                     $timeout(function () {
+                     $ionicHistory.clearCache();
+                     $ionicHistory.clearHistory();
+                    }, 30);
                     //$ionicPopup.hide();
                 }
               }
@@ -1956,7 +1960,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
 // --------我的专员-苟玲----------------
 //我的专员消息列表
-.controller('contactListCtrl',function($scope, $http, $state, $stateParams, Users, Storage,CONFIG){
+.controller('contactListCtrl',function($scope, $http, $state, $stateParams, Users, Storage,CONFIG,$ionicSideMenuDelegate){
     //console.log($stateParams.tt);
     
     $scope.chatImgUrl=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/';
@@ -1990,6 +1994,10 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
      {
         Storage.set("ImageURL_doc", ImageURL_doc)
      }
+
+     $scope.toggleLeftMenu = function() {
+          $ionicSideMenuDelegate.toggleLeft();
+       }; 
 })
 
 .controller('ChatDetailCtrl' ,function($scope, $http, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,Data) 
@@ -2743,14 +2751,42 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 }])
 
 //我的二维码
-.controller('myQrcodecontroller', function ($scope, $ionicHistory) {
+.controller('myQrcodecontroller', function ($scope, $ionicHistory,Storage,Data,CONFIG) {
 
     $scope.nvGoback = function() {
        $ionicHistory.goBack();
       }
 
-    $scope.bar = "PID201506180012";
+    $scope.bar = Storage.get("UID");
+    $scope.qr_Image = "img/DefaultAvatar.jpg";
+    $scope.qr_UserName ="无";
+    $scope.qr_GenderText ="无";
 
+    var urltemp1 = Storage.get("UID") + '/BasicInfo';
+    Data.Users.GetPatBasicInfo({route:urltemp1}, function (success, headers) {
+        $scope.qr_UserName = success.UserName;
+        $scope.qr_GenderText= success.GenderText;
+         }, function (err) {
+
+    });
+
+    var urltemp2 = Storage.get('UID') + '/BasicDtlInfo';
+    Data.Users.GetPatientDetailInfo({route:urltemp2}, 
+       function (success, headers) {
+        //console.log(success);
+          if( (success.PhotoAddress=="") || (success.PhotoAddress==null))
+          {
+            $scope.qr_Image = "img/DefaultAvatar.jpg";
+          }
+          else 
+          {
+            $scope.qr_Image = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile + "/" + success.PhotoAddress;
+          } 
+
+       }, 
+      function (err) {
+        // 目前好像不存在userid不对的情况，都会返回一个结果
+      });
 })
 ;
 

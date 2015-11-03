@@ -20,16 +20,6 @@
 		"url":"img/icon/password.png"
 	},
 	{
-		"catalog":"设置",
-		"catalogID":"config",
-		"url":"img/icon/set.png"
-	},
-	{
-		"catalog":"关于",
-		"catalogID":"about",
-		"url":"img/icon/about.png"
-	},
-	{
 		"catalog":"退出当前账号",
 		"catalogID":"logout",
 		"url":"img/icon/singout.png"
