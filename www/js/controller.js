@@ -2054,7 +2054,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
             var DataArry = obj.content.split("||");
             if (DataArry[0] == WsUserId)
             {
-              if(DataArry[1] == $scope.Dialog.DoctorId)
+              if(DataArry[1] == $scope.DoctorId)
               {
                   $scope.Dialog.push({"IDFlag": "Receive","SendDateTime": DataArry[2],"Content":DataArry[3]});
                   //console.log($scope.Dialog);
@@ -2356,7 +2356,6 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
 
 //----------------侧边栏----------------
-//个人信息
 //个人信息
 .controller('personalInfocontroller',['$scope','$ionicHistory','$state','$ionicPopup','$resource','Storage','Data','CONFIG','$ionicLoading','$ionicPopover','Camera',
    function($scope, $ionicHistory, $state, $ionicPopup, $resource, Storage, Data,CONFIG, $ionicLoading, $ionicPopover, Camera) {             
@@ -2746,7 +2745,6 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
       }; // function结束
 
 }])
-
 //我的二维码
 .controller('myQrcodecontroller', function ($scope, $ionicHistory,Storage,Data,CONFIG) {
 

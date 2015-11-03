@@ -68,6 +68,8 @@
             <label><input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="2"/>  女</label>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <label><input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="3" />  其他</label>
+            <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label><input type="radio" name="Gender" ng-model="BasicInfo.Gender" value="4" />  未知</label> -->
           </div>
         </div>
         <div class="row">
@@ -87,17 +89,42 @@
              <!-- </a> -->
           </div>
         </div>
-        <!-- <div class="row">
+        <div class="row">
           <div class="col">
             <span class="input-label">医保类型</span> 
           </div>  
-          <div class="col col-67">
-             <select ng-model="BasicInfo.InsuranceTypeText" ng-options="InsuranceType.Name as InsuranceType.name InsuranceType.Code as InsuranceType.value for InsuranceType in InsuranceTypes"> -->
+          <div class="col col-67" style="width:100%">
+             <select ng-model="BasicInfo.InsuranceType" style="width:100%">
+              <!-- <select ng-model="BasicInfo.InsuranceType" ng-options="InsuranceType.Name for InsuranceType in InsuranceTypes" style="width:100%"> -->
               <!-- <option>as InsuranceType.value group by InsuranceType.Name </option> -->
-             <!-- </select> -->
+              <option value="1">医保</option>
+              <option value="2">免费</option>
+              <option value="3">包干</option>
+              <option value="4">军半费</option>
+              <option value="5">基本医保</option>
+              <option value="6">大病统筹</option>
+              <option value="7">公费医疗</option>
+              <option value="8">中青医保</option>
+              <option value="9">其他医保</option>
+              <option value="A">自费</option>
+              <option value="B">公费</option>
+              <option value="C">贵宾</option>
+              <option value="D">其他</option>
+              <option value="E">老年无业</option>
+              <option value="F">儿童医保</option>
+              <option value="G">停用</option>
+              <option value="H">离休医保</option>
+              <option value="I">医疗照顾</option>
+              <option value="J">外地医保</option>
+              <option value="K">合作医疗</option>
+              <option value="L">慈善儿童</option>
+              <option value="M">不孕不育</option>
+              <option value="N">军休干部</option>
+              <option value="Z">军队医改</option>
+             </select>
           <!-- <input class="item-input-wrapper" type="text" ng-model="BasicInfo.InsuranceTypeText" placeholder="请选择您的医保类型" style="width:408px"> -->
-        <!--   </div>
-        </div> -->
+          </div>
+        </div>
       </ion-item>
      </div>
 
@@ -113,7 +140,7 @@
             <span class="input-label">血型</span> 
           </div>  
           <div class="col col-67" style="width:100%">
-            <select ng-model="BasicInfo.BloodType">
+            <select ng-model="BasicInfo.BloodType" style="width:100%">
               <option value="1">A型</option>
               <option value="2">B型</option>
               <option value="3">O型</option>
