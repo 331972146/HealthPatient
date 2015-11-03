@@ -2054,7 +2054,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
             var DataArry = obj.content.split("||");
             if (DataArry[0] == WsUserId)
             {
-              if(DataArry[0] == $scope.Dialog.DoctorId)
+              if(DataArry[1] == $scope.Dialog.DoctorId)
               {
                   $scope.Dialog.push({"IDFlag": "Receive","SendDateTime": DataArry[2],"Content":DataArry[3]});
                   //console.log($scope.Dialog);
