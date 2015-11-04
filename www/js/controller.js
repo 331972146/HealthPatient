@@ -441,6 +441,14 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
       }
       $scope.lastviewtitle = $ionicHistory.backTitle();
       ////////////设置提醒/////////////
+      $scope.checkalert = '';
+      $scope.alerttitlecheck = function(c)
+      {
+         console.log('title change');
+         if(c) $scope.checkalert='required';
+         else  $scope.checkalert='';
+         console.log($scope.checkalert);
+      }
       $ionicModal.fromTemplateUrl('partials/other/addalert.html', {
         scope: $scope,
         animation: 'slide-in-up'
@@ -498,23 +506,26 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
           console.log('Selected epoch is : ', val, 'and the time is ', SelectedTime.getUTCHours(), ':', SelectedTime.getUTCMinutes(), 'in UTC');
         }
       };
-      $scope.save = function()
+      $scope.save = function(c)
       {
-        console.log($scope.flag);
-        if($scope.flag=='update')
+        if(c)
         {
-          $scope.flag='save';
-          NotificationService.update($scope.alertcontent);
-          $scope.alertlist = NotificationService.get();
-          $scope.closeModal();
-        }else{
-          console.log('save');
-          console.log($scope.alertcontent);
-          NotificationService.save($scope.alertcontent);
-          $scope.alertlist = NotificationService.get();
-          console.log($scope.alertlist);
-          $scope.closeModal();
-        }
+          console.log($scope.flag);
+          if($scope.flag=='update')
+          {
+            $scope.flag='save';
+            // NotificationService.update($scope.alertcontent);
+            $scope.alertlist = NotificationService.get();
+            $scope.closeModal();
+          }else{
+            console.log('save');
+            console.log($scope.alertcontent);
+            // NotificationService.save($scope.alertcontent);
+            $scope.alertlist = NotificationService.get();
+            console.log($scope.alertlist);
+            $scope.closeModal();
+          }
+        }else $scope.checkalert = 'required';
       }
       $scope.remove = function(index)
       {
@@ -706,8 +717,12 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
 .controller('bpmcontroller',['$scope',  '$timeout', '$cordovaBluetoothSerial', '$ionicLoading', '$cordovaBLE', 'BloodPressureMeasure', '$ionicModal', 'VitalInfo','extraInfo',
   function($scope,  $timeout, $cordovaBluetoothSerial, $ionicLoading, $cordovaBLE, BloodPressureMeasure, $ionicModal, VitalInfo,extraInfo){
     console.log('bpmcontroller');
+    var total = document.documentElement.clientHeight;
+    console.log(total);
+    var bpm_chartdiv = 3*total/5;
+    document.getElementById("bpm_chartdiv").style.height=bpm_chartdiv+"px";
     var bpc=BloodPressureMeasure.BloodPressureChart();
-    var chart = AmCharts.makeChart("chartdiv",bpc,500);
+    var chart = AmCharts.makeChart("bpm_chartdiv",bpc,500);
     $scope.device_a='';
     $scope.device_c='';
     $scope.showscanicon=false;
@@ -2868,8 +2883,8 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
              
           }
       };
-      $scope.chart = AmCharts.makeChart("chartdiv",$scope.data1);
-      $scope.chart2 = AmCharts.makeChart("chartdiv2",$scope.data2);
+      AmCharts.makeChart("riskinfo_chartdiv",$scope.data1);
+      // AmCharts.makeChart("riskinfo_chartdiv",$scope.data2);
       
       // //console.log("又画图了");
 
@@ -3177,12 +3192,12 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
     // $ionicSlideBoxDelegate.currentIndex();
     if(_index == 1) {
       // $scope.$apply(function () {
-        AmCharts.makeChart("chartdiv",$scope.data2);
+        AmCharts.makeChart("riskinfo_chartdiv",$scope.data2);
       // });
     }
     else {
       // $scope.$apply(function () {
-        AmCharts.makeChart("chartdiv",$scope.data1);
+        AmCharts.makeChart("riskinfo_chartdiv",$scope.data1);
       // });
     }
     console.log($scope.config);
