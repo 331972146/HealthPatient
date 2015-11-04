@@ -1424,7 +1424,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
          }     
        );
-    }
+     }
 
        $http.get('data/guide-dbp.json').success(function(data) {
          DBPGuide=data;
@@ -1455,16 +1455,16 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           $ionicSideMenuDelegate.toggleLeft();
       };
       
-      监视进入页面
-      $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
-          console.log("enter graphView") ;
-          if(Storage.get('graphRefresh')=='1') //任务完成或插入体征则刷新
-          {
-            init_view();
-            Storage.set('graphRefresh','0');
-          }
+      //监视进入页面
+      // $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+      //     console.log("enter graphView") ;
+      //     if(Storage.get('graphRefresh')=='1') //任务完成或插入体征则刷新
+      //     {
+      //       init_view();
+      //       Storage.set('graphRefresh','0');
+      //     }
           
-      });
+      // });
       
       //提升切换  切换上图Y轴、标题、分级guide
      $scope.changeVitalInfo = function(option) {
