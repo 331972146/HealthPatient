@@ -1,1 +1,34 @@
 /* Empty. Add your own CSS if you like */
+#chartdiv {#chartdiv {
+  width   : 100%;
+  height    : 250px;
+  font-size : 15px;
+  display: inline;
+  background-color: #EEE8D6;
+} 
+  width: 100%;
+  height: 250px;
+  background-color: #F7F4EA;
+ 
+}
+
+
+#chartdiv2 {#chartdiv2 {
+  width   : 100%;
+  height    : 250px;
+  font-size : 15px;
+  background-color: #EEE8D6;
+} 
+  width: 100%;
+  height: 250px;
+  background-color: #F7F4EA;
+}
+.loading-container{
+  -webkit-align-items: flex-start;
+  -moz-align-items: flex-start;
+  align-items: flex-start;
+	padding-top: 80%;
+  .loading{
+	border-radius: 130px;
+  }
+}
