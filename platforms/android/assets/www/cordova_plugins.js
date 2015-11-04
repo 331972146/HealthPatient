@@ -57,6 +57,11 @@ module.exports = [
         ]
     },
     {
+        "file": "plugins/cordova-plugin-whitelist/whitelist.js",
+        "id": "cordova-plugin-whitelist.whitelist",
+        "runs": true
+    },
+    {
         "file": "plugins/de.appplant.cordova.plugin.local-notification/www/local-notification.js",
         "id": "de.appplant.cordova.plugin.local-notification.LocalNotification",
         "clobbers": [
@@ -267,11 +272,6 @@ module.exports = [
         "clobbers": [
             "window.FileTransfer"
         ]
-    },
-    {
-        "file": "plugins/cordova-plugin-whitelist/whitelist.js",
-        "id": "cordova-plugin-whitelist.whitelist",
-        "runs": true
     }
 ];
 module.exports.metadata = 
@@ -284,11 +284,11 @@ module.exports.metadata =
     "org.apache.cordova.inappbrowser": "0.6.0",
     "cordova-plugin-datepicker": "0.9.1",
     "com.ionic.keyboard": "1.0.4",
+    "cordova-plugin-whitelist": "1.1.0",
     "de.appplant.cordova.plugin.local-notification": "0.8.2-dev",
     "cordova-plugin-camera": "1.2.0",
     "cordova-plugin-file": "3.0.0",
-    "cordova-plugin-file-transfer": "1.3.0",
-    "cordova-plugin-whitelist": "1.1.0"
+    "cordova-plugin-file-transfer": "1.3.0"
 }
 // BOTTOM OF METADATA
 });

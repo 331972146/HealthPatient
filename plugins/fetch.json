@@ -55,6 +55,14 @@
         "is_top_level": true,
         "variables": {}
     },
+    "cordova-plugin-whitelist": {
+        "source": {
+            "type": "local",
+            "path": "C:\\Users\\ZJU\\Desktop\\little\\login\\plugins\\cordova-plugin-whitelist"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
     "de.appplant.cordova.plugin.local-notification": {
         "source": {
             "type": "local",
@@ -83,14 +91,6 @@
         "source": {
             "type": "local",
             "path": "C:\\Users\\ZJU\\Desktop\\little\\HealthCoach\\plugins\\cordova-plugin-file"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
-    "cordova-plugin-whitelist": {
-        "source": {
-            "type": "local",
-            "path": "D:\\Task\\chrodisea-phone\\plugins\\cordova-plugin-whitelist"
         },
         "is_top_level": true,
         "variables": {}

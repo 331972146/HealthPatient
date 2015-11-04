@@ -5,7 +5,7 @@
 	其他信息
 	删除/保存 -->
 		<!-- <button class='button button-clear button-small button-full button-outline button-positive' ng-click=""></button> -->
-		<form name="myForm">
+		<form>
 			<div class="list list-inset">
 				<label class="item item-input item-select item-stacked-label">
 					<div class="input-label">
@@ -23,18 +23,15 @@
 					</select>
 				</label>
 				<label class="item item-input item-stacked-label">
-					<span class="input-label">测量值 (毫摩尔/升)
-						<span class="error" ng-show=bgcheck=='required'>*必填项目</span>
-						<span class="error" ng-show='myForm.bgmv.$error.max'>*输入异常</span>
-					</span>
-					<input type="number" name='bgmv' ng-model='bloodglucose.mvalue' required max='15' ng-change="check(myForm.bgmv.$error.required)">
+					<span class="input-label">测量值</span>
+					<input type="number" ng-model='bloodglucose.mvalue'>
 				</label>
 				<label class="item item-input item-stacked-label">
-					<span class="input-label">目标值 (毫摩尔/升):{{bloodglucose.tvalue}}</span>
+					<span class="input-label">目标值:{{bloodglucose.tvalue}}</span>
 				</label>
 			</div>
 			<div class="button-bar padding">
-				<a class="button button-positive button-outline" ng-click="savebloodglucose(myForm.$valid)">保存</a>
+				<a class="button button-positive button-outline" ng-click="savebloodglucose()">保存</a>
 			</div>
 		</form>
 	</ion-content>
