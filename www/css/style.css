@@ -23,3 +23,12 @@
   height: 250px;
   background-color: #F7F4EA;
 }
+.loading-container{
+  -webkit-align-items: flex-start;
+  -moz-align-items: flex-start;
+  align-items: flex-start;
+	padding-top: 80%;
+  .loading{
+	border-radius: 130px;
+  }
+}

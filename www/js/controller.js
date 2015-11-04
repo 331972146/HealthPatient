@@ -1180,7 +1180,7 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     
   }
 }])
-.controller('bloodglucosecontroller',['$scope','Data','Storage', 'VitalInfo','extraInfo', function($scope,Data,Storage,VitalInfo,extraInfo){
+.controller('bloodglucosecontroller',['$scope','Data','Storage', 'VitalInfo','extraInfo', '$ionicLoading', function($scope,Data,Storage,VitalInfo,extraInfo,$ionicLoading){
   console.log('bloodglucosecontroller');
   $scope.bloodglucose={"select":'早餐前',"mvalue":"","tvalue":""};
   $scope.bgcheck='';
@@ -1208,9 +1208,21 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
         "DeviceType": 11
       }
       console.log(save);
+      var refreshstatus="";
       VitalInfo.PostPatientVitalSigns(save).then(function(s){
         console.log(s);
-      })
+        $ionicLoading.show({
+          template: '保存成功',
+          noBackdrop: true,
+          duration: 700
+        });
+      },function(e){
+        $ionicLoading.show({
+          template: '保存失败',
+          noBackdrop: true,
+          duration: 700
+        });
+      });
     }else $scope.bgcheck='required';
   }
 }])
