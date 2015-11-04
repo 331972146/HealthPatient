@@ -1374,7 +1374,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
        var PulseGuide='';
        var BloodSugarGuide='';
        var ChartData=""; //图形数据
-       var chart="";  //图形对象 全局变量target-phone
+       var chart_graph="";  //图形对象 全局变量target-phone
 
        var PlanNo='';
        var StartDate =''; 
@@ -1455,7 +1455,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           $ionicSideMenuDelegate.toggleLeft();
       };
       
-      //监视进入页面
+      监视进入页面
       $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
           console.log("enter graphView") ;
           if(Storage.get('graphRefresh')=='1') //任务完成或插入体征则刷新
@@ -1488,13 +1488,13 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
               {
                 createStockChart(data); //画图
                 setTimeout(function(){
-                  chart.panels[1].addListener("clickGraphItem",showDetailInfo); 
+                  chart_graph.panels[1].addListener("clickGraphItem",showDetailInfo); 
                  // $ionicLoading.hide();
-                  chart.panels[0].valueAxes[0].guides=Guide; //添加分级guide
-                  chart.panels[0].title= title;
-                  chart.panels[0].valueAxes[0].minimum=minimum;
-                  chart.panels[0].valueAxes[0].maximum=maximum;
-                  chart.validateNow();
+                  chart_graph.panels[0].valueAxes[0].guides=Guide; //添加分级guide
+                  chart_graph.panels[0].title= title;
+                  chart_graph.panels[0].valueAxes[0].minimum=minimum;
+                  chart_graph.panels[0].valueAxes[0].maximum=maximum;
+                  chart_graph.validateNow();
                 },200); //添加点击事件
 
               //获取该计划下的某体征的初始值和目标值
@@ -1536,10 +1536,10 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
        if(ItemCode=="Bloodpressure_1")
         {
           init_graph(UserId, PlanNo, StartDate, EndDate, ItemType, ItemCode, SBPGuide,80,200,"收缩压 （单位：mmHg）");
-          //chart.panels[0].title="收缩压 （单位：mmHg）";
-          //chart.panels[0].valueAxes[0].minimum=80;
-          //chart.panels[0].valueAxes[0].maximum=200;
-          //chart.panels[0].valueAxes[0].guides=SBPGuide; 
+          //chart_graph.panels[0].title="收缩压 （单位：mmHg）";
+          //chart_graph.panels[0].valueAxes[0].minimum=80;
+          //chart_graph.panels[0].valueAxes[0].maximum=200;
+          //chart_graph.panels[0].valueAxes[0].guides=SBPGuide; 
 
         }
         else if(ItemCode=="Bloodpressure_2")
@@ -1556,7 +1556,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
           init_graph(UserId, PlanNo, StartDate, EndDate, ItemType, ItemCode, BloodSugarGuide,0,18,"血糖 （单位：mmol/L）");
         }
 
-        //chart.validateNow(); 
+        //chart_graph.validateNow(); 
 
      }//function end 
 
@@ -1564,8 +1564,8 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
      //画图函数-血压、脉率
      function createStockChart(ChartData) {
         
-        chart="";
-        chart=AmCharts.makeChart("chartdiv", {
+        chart_graph="";
+        chart_graph=AmCharts.makeChart("chartdiv_graph", {
           type: "stock",
           pathToImages: "img/amcharts/",
           dataDateFormat:"YYYYMMDD",
