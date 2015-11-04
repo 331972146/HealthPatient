@@ -64,7 +64,7 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
       views: {
         'tab-tasks': {
           templateUrl: 'partials/tabs/index.task.tasklist.html',
-         controller: 'tasklistcontroller'
+          controller: 'tasklistcontroller'
         }
       }
     })
@@ -77,6 +77,17 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
         }
       }
     })
+    // .state('addpatient.risk',{
+    //   url:'/risk',
+    //   templateUrl:'partials/addpatient/risk.html',
+    //   controller:'RiskCtrl'
+    // })
+    // .state('addpatient.riskdetail',{
+    //   url:'/risk/:num',
+    //   cache: false,
+    //   templateUrl:'partials/addpatient/riskdetail.html',
+    //   controller:'RiskCtrl'
+    // })
    //任务列表跳转
     .state('tab.task.tl',{
       url:"/:tl",
@@ -88,8 +99,10 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
             //case 'tasklist':return "partials/tabs/index.task.tasklist.html";break;
             //case 'healtheducation':return "partials/tabs/index.task.healtheducation.html";break;
             case 'bpm':return "partials/tabs/index.task.bpm.html";break;
-             case 'bloodglucose':return "partials/tabs/index.task.bloodglucose.html";break;
+            case 'bloodglucose':return "partials/tabs/index.task.bloodglucose.html";break;
             case 'measureweight':return "partials/tabs/index.task.measureweight.html";break;
+            case 'riskinfo':return "partials/tabs/index.task.riskinfo.html";break;
+            case 'riskinfodetail':return "partials/tabs/index.task.riskinfodetail.html";break;
             default:return "partials/tabs/index.task.taskdetail.html";break;
           }
         },
@@ -102,6 +115,8 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
             case 'bpm':return "bpmcontroller";break;
             case 'bloodglucose':return "bloodglucosecontroller";break;
             case 'measureweight':return "measureweightcontroller";break;
+            case 'riskinfo':return "RiskCtrl";break;
+            case 'riskinfodetail':return "RiskCtrl";break;
             default:return 'taskdetailcontroller';break;
           }
         }

@@ -86,8 +86,9 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
           switch($stateParams.tl)
           {
             //case 'tasklist':return "partials/tabs/index.task.tasklist.html";break;
-            case 'healtheducation':return "partials/tabs/index.task.healtheducation.html";break;
+            //case 'healtheducation':return "partials/tabs/index.task.healtheducation.html";break;
             case 'bpm':return "partials/tabs/index.task.bpm.html";break;
+             case 'bloodglucose':return "partials/tabs/index.task.bloodglucose.html";break;
             case 'measureweight':return "partials/tabs/index.task.measureweight.html";break;
             default:return "partials/tabs/index.task.taskdetail.html";break;
           }
@@ -97,8 +98,9 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
           switch($stateParams.tl)
           {
             case 'tasklist':return 'tasklistcontroller';break;
-            case 'healtheducation':return "healtheducationcontroller";break;
+            //case 'healtheducation':return "healtheducationcontroller";break;
             case 'bpm':return "bpmcontroller";break;
+            case 'bloodglucose':return "bloodglucosecontroller";break;
             case 'measureweight':return "measureweightcontroller";break;
             default:return 'taskdetailcontroller';break;
           }
@@ -181,16 +183,7 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
             else if($stateParams.tt=='setComment') return 'SetCommentCtrl';
             else return 'HealthCoachInfoCtrl';
           }      
-  })
-    .state('tab.others', {
-        url: '/others',
-        views: {
-          'tab-others': {
-            templateUrl: 'partials/tabs/tab-others.html',
-            controller: 'OthersCtrl'
-          }
-        }
-    });
+  });
 
 //目录
  $stateProvider
@@ -204,7 +197,7 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
       url:"/:id",
       templateUrl:function($stateParams)
       {
-        console.log("$stateParams. is "+$stateParams.id);
+        //console.log("$stateParams. is "+$stateParams.id);
         // return "partials/index.task.measureweight.html";
         return "partials/catalog/catalog."+$stateParams.id+".html";
       },
@@ -218,7 +211,7 @@ angular.module('zjubme', ['ionic','zjubme.services', 'zjubme.directives', 'zjubm
 })
 // --------不同平台的相关设置----------------
 .config(function($ionicConfigProvider) {
-  $ionicConfigProvider.views.maxCache(5);
+  $ionicConfigProvider.views.maxCache(0);
   // note that you can also chain configs
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.tabs.style('standard');
