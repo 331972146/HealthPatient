@@ -543,7 +543,7 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
           Status:'3'
         }
         PlanInfo.GetExecutingPlan(get).then(function(s){
-          console.log(s[0]);
+          // console.log(s[0]);
           extraInfo.PlanNo(s[0])
         },function(e){
           console.log(e);
@@ -687,8 +687,8 @@ angular.module('zjubme.controllers', ['ionic','ngResource','zjubme.services', 'z
 }])
 
 //任务详细
-.controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage','$ionicPopup',
-function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage,$ionicPopup) {
+.controller('taskdetailcontroller',['$scope','$ionicModal','$stateParams','$state','extraInfo', '$cordovaInAppBrowser', 'TaskInfo','$ionicListDelegate','Storage','$ionicLoading', '$ionicPopup',
+function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,TaskInfo,$ionicListDelegate,Storage,$ionicLoading, $ionicPopup) {
   var data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//
   var detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};//extraInfo.PlanNo().PlanNo
 
@@ -731,18 +731,27 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
     data={"ParentCode":$stateParams.tl,"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     detail={"ParentCode":'',"PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     getlist();
+    var refreshstatus='刷新失败'
+    extraInfo.refreshstatus()=='刷新成功'?refreshstatus='刷新成功':refreshstatus;
+    $ionicLoading.show({
+      template: refreshstatus,
+      noBackdrop: true,
+      duration: 700
+    });
   }
   var getlist = function()
   {
     TaskInfo.GetTasklist(data).then(function(s){
       console.log(s);
       $scope.$broadcast('scroll.refreshComplete');
-      $scope.taskdetaillist = TaskInfo.insertstate(s);
+      $scope.taskdetaillist = extraInfo.TransformInstruction(TaskInfo.insertstate(s));
       var i=0;
       if(s.length)getdetail(i);
+      extraInfo.refreshstatus('刷新成功');
     },function(e){
       console.log(e);
       $scope.$broadcast('scroll.refreshComplete');
+      extraInfo.refreshstatus('刷新失败');
     });
   }
   var getdetail = function(index)
@@ -784,16 +793,41 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
 }])
 
 //任务列表
-.controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage',function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage) {
+.controller('tasklistcontroller',['$scope','$ionicModal','$timeout','$http', 'TaskInfo','extraInfo','Storage','$ionicLoading','PlanInfo',
+  function($scope,$ionicModal,$timeout,$http,TaskInfo,extraInfo,Storage,$ionicLoading,PlanInfo) {
   //extraInfo.PlanNo().PlanNo'PLAN20151029'
-  var data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
-  ionic.DomUtil.ready(function(){
-    get();
-  });
+  //$scope.getexecutingplan();
+   var data={"ParentCode":"T","PlanNo":"","Date":"NOW","PatientId":Storage.get("UID")};
+   var get = {
+          PatientId:Storage.get("UID"),
+          PlanNo:'NULL',
+          Module:'M1',
+          Status:'3'
+        }
+        PlanInfo.GetExecutingPlan(get).then(function(s){
+          // console.log(s[0]);
+          extraInfo.PlanNo(s[0]);
+          data.PlanNo=s[0].PlanNo;
+          get();
+        },function(e){
+          console.log(e);
+        })
+
+ 
+  // ionic.DomUtil.ready(function(){
+  //   get();
+  // });
   $scope.doRefresh = function() {
     $scope.getexecutingplan();
     data={"ParentCode":"T","PlanNo":extraInfo.PlanNo().PlanNo,"Date":"NOW","PatientId":Storage.get("UID")};
     get();
+    var refreshstatus='刷新失败'
+    extraInfo.refreshstatus()=='刷新成功'?refreshstatus='刷新成功':refreshstatus;
+    $ionicLoading.show({
+      template: refreshstatus,
+      noBackdrop: true,
+      duration: 700
+    });
   }
   var get = function()
   {
@@ -801,9 +835,11 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
       console.log(s);
       $scope.$broadcast('scroll.refreshComplete');
       $scope.tasklist = s;
+      extraInfo.refreshstatus('刷新成功');
     },function(e){
       console.log(e);
       $scope.$broadcast('scroll.refreshComplete');
+      extraInfo.refreshstatus('刷新失败');
     });
     // $http.get('testdata/tasklist.json').success(function(data){
     //  $scope.tasklist = TaskInfo.insertstate(data);
@@ -1169,16 +1205,30 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
 
 .controller('measureweightcontroller',['$scope','Data','Storage','VitalInfo', 'extraInfo','$ionicLoading',
   function($scope,Data,Storage,VitalInfo,extraInfo,$ionicLoading){
+  $scope.hcheck='';
+  $scope.wcheck='';
+  $scope.check_h = function(c)
+  {
+    $scope.BMI.BMI='';
+    if(!c)$scope.hcheck='';
+    else $scope.hcheck='required';
+  }
+  $scope.check_w = function(c)
+  {
+    $scope.BMI.BMI='';
+    if(!c)$scope.wcheck='';
+    else $scope.wcheck='required';
+  }
   $scope.$on('$viewContentLoading', 
-  function(event){
-    console.log('viewContentLoading');
-    VitalInfo.GetLatestPatientVitalSigns(get[0]).then(function(s){
-      console.log(s);
-      $scope.BMI.weight = parseInt(s.result);
-      VitalInfo.GetLatestPatientVitalSigns(get[1]).then(function(s){
-        $scope.BMI.height = parseInt(s.result);
+    function(event){
+      console.log('viewContentLoading');
+      VitalInfo.GetLatestPatientVitalSigns(get[0]).then(function(s){
         console.log(s);
-      });
+        $scope.BMI.weight = parseInt(s.result);
+        VitalInfo.GetLatestPatientVitalSigns(get[1]).then(function(s){
+          $scope.BMI.height = parseInt(s.result);
+          console.log(s);
+        });
     });
   });
   $scope.BMI={}
@@ -1201,81 +1251,97 @@ function($scope,$ionicModal,$stateParams,$state,extraInfo,$cordovaInAppBrowser,T
       console.log(s);
     });
   });
-  $scope.test = function()
+  $scope.mathbmi = function(c)
   {
-    $scope.BMI.BMI=($scope.BMI.weight/($scope.BMI.height * $scope.BMI.height));
-    if($scope.BMI.BMI<0.00185)$scope.BMI.result = "您的体重有点过轻了";
-    else if($scope.BMI.BMI>=0.00185&&$scope.BMI.BMI<0.002499)$scope.BMI.result = "您的体重属于正常范围";
-    else if($scope.BMI.BMI>=0.0025&&$scope.BMI.BMI<0.0028)$scope.BMI.result = "您的体重过重了";
-    else if($scope.BMI.BMI>=0.0028&&$scope.BMI.BMI<0.0032)$scope.BMI.result = "您已经属于肥胖行列了";
-    else if($scope.BMI.BMI>=0.0032)$scope.BMI.result = "您现在已经非常肥胖了";
-    console.log($scope.BMI.BMI);
-  };
-  $scope.saveWH = function()
-  {
-    var save = [{
-      "UserId": UserId,
-      "RecordDate": extraInfo.DateTimeNow().fulldate,
-      "RecordTime": extraInfo.DateTimeNow().fulltime,
-      "ItemType": "Weight",
-      "ItemCode": 'Weight_1',
-      "Value": $scope.BMI.weight,
-      "Unit": "kg",
-      "revUserId": "UserId",
-      "TerminalName": "sample string 9",
-      "TerminalIP": "sample string 10",
-      "DeviceType": 11
-    },
+    if(c)
     {
-      "UserId": UserId,
-      "RecordDate": extraInfo.DateTimeNow().fulldate,
-      "RecordTime": extraInfo.DateTimeNow().fulltime,
-      "ItemType": "Height",
-      "ItemCode": 'Height_1',
-      "Value": $scope.BMI.height,
-      "Unit": "cm",
-      "revUserId": "UserId",
-      "TerminalName": "sample string 9",
-      "TerminalIP": "sample string 10",
-      "DeviceType": 11
-    }]
-    VitalInfo.PostPatientVitalSigns(save[0]).then(function(s){
-      console.log(s);
-      VitalInfo.PostPatientVitalSigns(save[1]).then(function(s){
+      $scope.BMI.BMI=($scope.BMI.weight/($scope.BMI.height * $scope.BMI.height));
+      if($scope.BMI.BMI<0.00185)$scope.BMI.result = "您的体重有点过轻了";
+      else if($scope.BMI.BMI>=0.00185&&$scope.BMI.BMI<0.002499)$scope.BMI.result = "您的体重属于正常范围";
+      else if($scope.BMI.BMI>=0.0025&&$scope.BMI.BMI<0.0028)$scope.BMI.result = "您的体重过重了";
+      else if($scope.BMI.BMI>=0.0028&&$scope.BMI.BMI<0.0032)$scope.BMI.result = "您已经属于肥胖行列了";
+      else if($scope.BMI.BMI>=0.0032)$scope.BMI.result = "您现在已经非常肥胖了";
+      console.log($scope.BMI.BMI);
+    }
+  };
+  $scope.saveWH = function(c)
+  {
+    if(c)
+    {
+      var save = [{
+        "UserId": UserId,
+        "RecordDate": extraInfo.DateTimeNow().fulldate,
+        "RecordTime": extraInfo.DateTimeNow().fulltime,
+        "ItemType": "Weight",
+        "ItemCode": 'Weight_1',
+        "Value": $scope.BMI.weight,
+        "Unit": "kg",
+        "revUserId": "UserId",
+        "TerminalName": "sample string 9",
+        "TerminalIP": "sample string 10",
+        "DeviceType": 11
+      },
+      {
+        "UserId": UserId,
+        "RecordDate": extraInfo.DateTimeNow().fulldate,
+        "RecordTime": extraInfo.DateTimeNow().fulltime,
+        "ItemType": "Height",
+        "ItemCode": 'Height_1',
+        "Value": $scope.BMI.height,
+        "Unit": "cm",
+        "revUserId": "UserId",
+        "TerminalName": "sample string 9",
+        "TerminalIP": "sample string 10",
+        "DeviceType": 11
+      }]
+      VitalInfo.PostPatientVitalSigns(save[0]).then(function(s){
         console.log(s);
-        $ionicLoading.show({
-          template: '保存成功',
-          noBackdrop: true,
-          duration: 700
-        });
-        // alert("保存成功");
+        VitalInfo.PostPatientVitalSigns(save[1]).then(function(s){
+          console.log(s);
+          $ionicLoading.show({
+            template: '保存成功',
+            noBackdrop: true,
+            duration: 700
+          });
+          // alert("保存成功");
+        })
       })
-    })
+    }
+    
   }
 }])
 .controller('bloodglucosecontroller',['$scope','Data','Storage', 'VitalInfo','extraInfo', function($scope,Data,Storage,VitalInfo,extraInfo){
   console.log('bloodglucosecontroller');
-  $scope.bloodglucose={"select":'早餐前',"mvalue":"","tvalue":"123"};
-
-  $scope.savebloodglucose = function()
+  $scope.bloodglucose={"select":'早餐前',"mvalue":"","tvalue":""};
+  $scope.bgcheck='';
+  $scope.check = function(c)
   {
-    var save = {
-      "UserId": "PID201506180013",
-      "RecordDate": extraInfo.DateTimeNow().fulldate,
-      "RecordTime": extraInfo.DateTimeNow().fulltime,
-      "ItemType": "BloodSugar",
-      "ItemCode": extraInfo.TransformBloodglucoseCode($scope.bloodglucose.select),
-      "Value": $scope.bloodglucose.mvalue,
-      "Unit": "mmol/L",
-      "revUserId": "PID201506180013",
-      "TerminalName": "sample string 9",
-      "TerminalIP": "sample string 10",
-      "DeviceType": 11
-    }
-    console.log(save);
-    VitalInfo.PostPatientVitalSigns(save).then(function(s){
-      console.log(s);
-    })
+    // console.log('change');
+    if(!c)$scope.bgcheck='';
+    else $scope.bgcheck='required';
+  }
+  $scope.savebloodglucose = function(check)
+  {
+    if(check)
+    {
+      var save = {
+        "UserId": "PID201506180013",
+        "RecordDate": extraInfo.DateTimeNow().fulldate,
+        "RecordTime": extraInfo.DateTimeNow().fulltime,
+        "ItemType": "BloodSugar",
+        "ItemCode": extraInfo.TransformBloodglucoseCode($scope.bloodglucose.select),
+        "Value": $scope.bloodglucose.mvalue,
+        "Unit": "mmol/L",
+        "revUserId": "PID201506180013",
+        "TerminalName": "sample string 9",
+        "TerminalIP": "sample string 10",
+        "DeviceType": 11
+      }
+      console.log(save);
+      VitalInfo.PostPatientVitalSigns(save).then(function(s){
+        console.log(s);
+      })
+    }else $scope.bgcheck='required';
   }
 }])
 .controller('alertcontroller',['$scope', '$timeout', '$ionicModal', '$ionicHistory', '$cordovaDatePicker','$cordovaLocalNotification','NotificationService',
@@ -2004,7 +2070,7 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
             var DataArry = obj.content.split("||");
             if (DataArry[0] == WsUserId)
             {
-              if(DataArry[1] == $scope.Dialog.DoctorId)
+              if(DataArry[1] == $scope.DoctorId)
               {
                   $scope.Dialog.push({"IDFlag": "Receive","SendDateTime": DataArry[2],"Content":DataArry[3]});
                   //console.log($scope.Dialog);
@@ -2306,7 +2372,6 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
 
 
 //----------------侧边栏----------------
-//个人信息
 //个人信息
 .controller('personalInfocontroller',['$scope','$ionicHistory','$state','$ionicPopup','$resource','Storage','Data','CONFIG','$ionicLoading','$ionicPopover','Camera',
    function($scope, $ionicHistory, $state, $ionicPopup, $resource, Storage, Data,CONFIG, $ionicLoading, $ionicPopover, Camera) {             
@@ -2696,7 +2761,6 @@ function($scope, $timeout, $ionicModal,$ionicHistory, $cordovaDatePicker,$cordov
       }; // function结束
 
 }])
-
 //我的二维码
 .controller('myQrcodecontroller', function ($scope, $ionicHistory,Storage,Data,CONFIG) {
 

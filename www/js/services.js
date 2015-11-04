@@ -518,6 +518,26 @@ angular.module('zjubme.services', ['ionic','ngResource'])
         if(key==n)r=value;
       })
       return r;
+    },
+    TransformInstruction:function(arr)
+    {
+      var l=arr.length;
+      for (var i=0;i<l;i++)
+      {
+        if(arr[i].ParentCode=='TB0000')
+        {
+          arr[i].Instruction!=''?arr[i].Instruction="建议摄入量："+arr[i].Instruction+'克':arr[i].Instruction;
+        }
+      }
+      return arr;
+    },
+    refreshstatus:function(status){
+       if(status==null)
+      {
+        return angular.fromJson(window.localStorage['refreshstatus']);
+      }else {
+        window.localStorage['refreshstatus'] = angular.toJson(status);
+      }
     }
   }
 })
